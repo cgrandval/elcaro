@@ -1,16 +1,16 @@
 Pomm - PostgreSQL / PHP Object Model Manager
 ============================================
 
-Qu'est ce que c'est ?
+O que é ?
 ---------------------
 
-[Pomm](http://pomm.coolkeums.org) est un **gestionnaire de modèle objet** dédié au moteur de base de données PostgreSQL. Qu'est-ce qu'un gestionnaire de modèle objet ?
+[Pomm](http://pomm.coolkeums.org) é um **operador de modelo de objeto** dedicado ao motor de banco de dados PostgreSQL. O que é um operador de modelo de objeto ?
 
-C'est avant tout un framework orienté objet de base de données Postgresql pour PHP, composé**hydrateur** d'objets qui utilise un convertisseur entre PHP et PostgreSQL pour assurer qu'un booléen dans Postgres sera vu depuis PHP comme tel, de même pour les tableaux, le type clé -> valeur 'HStore', les types géométriques, XML, JSON, etc.
+Antes de tudo, é um framework orientado a objetos de banco de dados PostgreSQL para PHP, composto **hidratador** de objetos que usa um conversor entre PHP e PostgreSQL para garantir que um booleano em Postgres será visto como tal em PHP, como para os arrays, o tipo chave -> valor 'HStore', os tipos geométricos, XML, JSON, etc.
 
-Cette fonctionnalité de conversion est très importante, car le typage dans PostgreSQL est un élément incontournable de la définition du schéma par contrainte. La possibilité d'enrichir PostgreSQL avec des types personnalisés est prise en compte.
+Essa funcionalidade de conversão é muito importante, pois a indução de Tipo em PostgresSQL é um elemento essencial da definição do esquema por constrangimento. A possibilidade de enriquecer PostgreSQL com esses tipos personalizados é tida em conta.
 
-C'est également un gestionnaire de modèle orienté objet car Pomm crée des classes de mapping qui lient les structures SQL avec des objets PHP. Nous verrons là encore les grosses différences entre Pomm et les ORM classiques et comment utiliser la puissance du SQL de Postgres au service d'une petite application. 
+É também um operador de modelo orientado a objeto pois Pomm cria classes de mapping que ligam os estruturas SQL com objetos PHP. Nós veremos também de novo as grandes diferenças entre Pomm e os ORM classicos e como usar o potência do SQL de Postgres ao serviço de uma pequena aplicação.
 
 En quoi Pomm est il différent d'un ORM et pourquoi l'utiliser ?
 ---------------------------------------------------------------
