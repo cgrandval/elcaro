@@ -10,31 +10,31 @@ Antes de tudo, é um framework orientado a objetos de banco de dados PostgreSQL 
 
 Essa funcionalidade de conversão é muito importante, pois a indução de Tipo em PostgresSQL é um elemento essencial da definição do esquema por constrangimento. A possibilidade de enriquecer PostgreSQL com esses tipos personalizados é tida em conta.
 
-É também um operador de modelo orientado a objeto pois Pomm cria classes de mapping que ligam os estruturas SQL com objetos PHP. Nós veremos também de novo as grandes diferenças entre Pomm e os ORM classicos e como usar o potência do SQL de Postgres ao serviço de uma pequena aplicação.
+É também um operador de modelo orientado a objeto pois Pomm cria classes de mapping que ligam as estruturas SQL com objetos PHP. Nós veremos também de novo as grandes diferenças entre Pomm e os ORM clássicos e como usar o potência do SQL de Postgres a serviço de uma pequena aplicação.
 
-En quoi Pomm est il différent d'un ORM et pourquoi l'utiliser ?
+Em que Pomm é diferente de um ORM e porque usá-lo?
 ---------------------------------------------------------------
 
-Il est difficile de répondre rapidement à cette question sans tomber dans l'ornière du débat pro / anti ORM. L'auteur développe avec PHP et PostgreSQL depuis plus d'une dizaine d'années. L'avènement des ORM a certes changé la façon d'utiliser les bases de données en apportant des vraies couches modèles au sein du MVC, mais ils ont également apporté un certain nombre d'inconvénients très handicapants pour les habitués des fonctionnalités des bases de données en général et de PostgreSQL en particulier. Pomm part donc du parti pris de ne fonctionner qu'avec PostgreSQL et son objectif est de permettre aux développeurs PHP de tirer parti de ses fonctionnalités au maximum. 
+É difícil responder rapidamente a essa pergunta sem cair no marasmo do debate profissional / anti ORM. O autor desenvolve com PHP e PostgreSQL há mais de dez anos. O advento dos ORM mudaram com certeza muito o jeito de usar os bancos de dados trazendo camadas reais de models dentro do MVC, mas eles trouxeram também algumas desvantagens muito incapacitantes para os habituados das funcionalidades dos bancos de dados em geral e de PostgreSQL em particular. Pomm escolheu de funcionar somente com PostgreSQL e o objetivo dele é de permitir aos desenvolvedores PHP de tirar proveito das funcionalidades ao máximo.
 
-Une des limitations des ORM est qu'en calquant une logique orientée objet sur des structures SQL, ils figent ces dernières suivant la définition de classes (PHP ou autres) alors que,
+Uma das limitações dos ORM é que decalcando uma lógica orientada ao objeto sobre estruturas SQL, eles paralisam-nas seguindo a definição de classes (PHP ou outras), enquanto,
 
- * les bases de données ne manipulent que [des ensembles](http://fr.wikipedia.org/wiki/Alg%C3%A8bre_relationnelle "algèbre relationnelle") de tuples, 
- * que les opérations ensemblistes sont insensibles à la taille de ces tuples 
- * que le système de projection (SELECT) a été conçu pour les **façonner**. 
+ * os bancos de dados manipulam somente [conjuntos](http://pt.wikipedia.org/wiki/%C3%81lgebra_relacional " álgebra relacional") de tuples,
+ * as operações de conjunto sejam insensíveis ao tamanho desses tuples,
+ * o sistema de projeção (SELECT) foi criado para os **modelar**.
 
-Un ensemble de base de données est donc par essence tout sauf figé. Nous verrons comment Pomm tire parti de la souplesse de PHP pour créer des objets élastiques s'adaptant à notre besoin. Ceci est d'autant plus appréciable que PostgreSQL sait manipuler des entités comme des objets, nous verrons comment faire des requêtes « orientées objet » en SQL. 
+Então, um conjunto de banco de dados é por definição tudo exceto paralisado. Nós veremos como Pomm aproveite a flexibilidade de PHP para criar objetos elásticos adaptando-se a nossa necessidade. Isso é particularmente mais apreciável pois PostgreSQL sabe manipular entities como objetos, nós veremos como criar cláusulas " orientada ao objeto " em SQL. 
 
-Un autre des problèmes des ORM est lié à la couche d'abstraction : ils proposent un langage pseudo SQL orienté objet qui se cantonne souvent au plus petit commun dénominateur des fonctionnalités partagées entre tous les moteurs de bases de données et il est souvent délicat de trouver comment faire quelque chose qu'on sait déjà faire en SQL classique. Nous verrons comment Pomm permet de faire directement des requêtes SQL sans les inconvénients de la construction fastidieuse -- que probablement certains d'entre vous ont connu -- qui menait à des scripts peu maintenables et peu testables.
+Um outro problemas dos ORM é ligado à camada de abstração : eles propõem uma pseudo-linguagem SQL orientada ao objeto que limita-se frequentemente ao mínimo denominador comum das funcionalidades compartilhadas entre todos os motores de bancos de dados e muitas vezes é muito delicado de fazer algo que já sabemos fazer com o SQL clássico. Nós veremos como Pomm permite de criar cláusulas SQL diretamente sem as desvantagens de uma construção complicada -- que provavelmente alguns de vocês conheceram -- que conduzia a ter scripts poucos sustentáveis e testáveis.
 
-Le présent article vous propose de créer une application web qui cherche et affiche des informations sur les employés de la société El-Caro Corporation.
+Esse artigo propõe de criar uma aplicação web que busca e exibe informações sobre os funcionários da empresa El Cario Corporation.
 
-Mise en place de l'application
+Implementação da aplicação
 ------------------------------
 
-L'application suivante n'utilise pas de framework et est volontairement minimaliste. Il est bien sûr fortement conseillé d'en utiliser un, il existe à ce propos un adaptateur pour [Silex et Symfony](http://pomm.coolkeums.org/download). Ne vous étonnez donc pas de ne pas trouver de belles URL (routing), de contrôleurs encapsulés (et testables), de moteur de template (fort utile) et autres bonnes pratiques, cela va forcément s'éloigner de ce à quoi pourrait ressembler une application respectueuse des préceptes RESTFULL, mais cela va nous permettre de nous concentrer sur le sujet de cet article.
+A aplicação seguinte não usa frameworks e é intencionalmente minimalista. Mas é claro que é altamente recomendado usar um e tocando nesse assunto, existe um adaptador para [Silex e Symfony](http://pomm.coolkeums.org/download). Então, não se surpreenda por não encontrar lindas URL (routing), controllers encapsulados (e testaveis), de motor de templates (muito util) e outros boas práticas. Isso vai obrigatoriamente se afastar do jeito que poderia ser uma aplicação respeitosa dos preceitos RESTFULL, mas isso vai nós permitir de focar no assunto desse artigo.
 
-Nous allons utiliser [Composer](http://composer.org "composer, c'est le bien.") pour installer Pomm et instancier un auto-loading dans notre projet. Pour cela, il n'est pas utile de créer plus qu'un fichier `composer.json` comme suit dans un répertoire vierge :
+Nós vamos usar [Composer](http://composer.org "composer, é o bem.") para instalar Pomm e instanciar um auto-loading nosso projeto. Para isso, só é necessário criar um arquivo `composer.json` como abaixo em um diretório vazio : 
 
 ```json
 {
@@ -45,8 +45,7 @@ Nous allons utiliser [Composer](http://composer.org "composer, c'est le bien.") 
 }
 ```
 
-Reste à appeler le script `composer.phar install` pour que composer installe Pomm et le prenne en compte dans son autoloader.
-
+Somente, resta a chamar o script `composer.phar install` para que o Composer instala Pomm e o leve em consideração no autoloader dele.
 
 Bienvenue dans la société El-Caro Corp.
 ---------------------------------------
