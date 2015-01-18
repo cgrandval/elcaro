@@ -47,14 +47,14 @@ Nós vamos usar [Composer](http://composer.org "composer, é o bem.") para insta
 
 Somente, resta a chamar o script `composer.phar install` para que o Composer instala Pomm e o leve em consideração no autoloader dele.
 
-Bienvenue dans la société El-Caro Corp.
+Bem-vindo na empresa El-Caro Corp.
 ---------------------------------------
 
-Ce tutoriel vous propose de créer une application simpliste de gestion des salariés de la société informatique « El-Caro Corporation ». Cette société est divisée en départements hiérarchisés et chaque employé appartient à un département lui-même pouvant être fils d'un autre service. La structure de la base de données est la suivante :
+Esse tutorial propõe para vocês de criar uma aplicação simples de gestão de funcionarios da empresa informática « El-Caro Corporation ». Essa empresa é dividida em departamentos hierarquizados e cada empregado pertence a um departamento, podendo ele mesmo, ser um filho de um outro serviço. A estratura do banco de dados é a seguinte : 
 
 ![Alt text](elcaro.db.png "Database Structure")
 
-Nous allons créer un schéma nommé `company` dans notre base de données pour y créer la structure décrite ci-dessus :
+Nós vamos criar um esquema chamado `company` no nosso banco de dados para criar a estrutura descrita abaixo :
 
 ```sql
 $> CREATE SCHEMA company;
@@ -63,7 +63,8 @@ $> SHOW search_path;
 company, public
 ```
 
-La commande `SHOW` doit nous retourner `company, public` signe que le client va d'abord chercher les objets dans le schéma `company` puis ensuite dans le schéma par défaut `public`. Il y a plusieurs avantages a utiliser un schéma, le plus important est de pouvoir intégrer des extensions contenant des tables à notre application sans risquer une collistion de nom. Un autre avantage est que si l'on souhaite « passer l'éponge », il suffit de lancer un `DROP SCHEMA company CASCADE` et de recommencer. Une fois le schéma créé, implémentons la structure :
+O comando `SHOW` deve nós retornar `company, public` sinal que o cliente vai primeiro buscar os objetos no esquema `company` e depois no esquema por padrão `public`. Há muitas vantagens em usar um esquema, o mais importante é de poder integrar extensões contendo as tabelas da nossa aplicação sem arriscar uma colisão de nome. Uma outra vantagem é que se desejemos descartar, basta lançar um `DROP SCHEMA company CASCADE` e recomeçar.
+Uma vez o esquema criado, implementamos a estrutura :
 
 ```sql
 $> CREATE TABLE department (
@@ -73,7 +74,7 @@ $> CREATE TABLE department (
     );
 ```
 
-Tel que nous l'avons décrite, cette table possède un identifiant technique -- un entier -- qui s'auto-incrémente à l'aide d'une séquence qui est auto-générée et initialisée à la création de la table comme l'indique PostgreSQL. Notons que le `parent_id` même s'il est indiqué comme référent au département parent peut être nul dans le cas du département racine. En revanche la contrainte de clé étrangère forcera tout département indiqué comme père à exister au préalable dans la table.
+Como descrevemos, essa tabela tem um identificador tecníco -- um inteiro -- que se auto-incrementa com a ajuda de uma sequência auto-gerada e inicializada na criação da tabela como indica PostgreSQL. Notamos que o `parent_id`, mesmo se ele é indicado como referência ao departamento parente, pode ser nulo no caso do departamento raiz. Por outro lado, o constrangimento de chave estrangeira forçará qualquer departamento indicado como pai a existir primeiramente na tabela.
 
 ```sql
 $> CREATE TABLE employee (
@@ -87,9 +88,9 @@ $> CREATE TABLE employee (
     );
 ```
 
-Nous voyons ici que la structure d'un employé est fortement contrainte. Une vérification -- pour l'exemple -- d'âge est faite pour vérifier que la date de naissance entrée ne correspond pas à un mineur. Dans le cas d'un employé, l'appartenance à un département est rendue obligatoire par la contrainte `NOT NULL` sur le champs de clé étrangère `department_id` vers la table `department`.
+Nós vimos aqui que a estrutura de um empregado é fortemente constrangida. Uma verificação -- por exemplo -- de idade é feita para verificar que a data de nascimento digitada não corresponde a um menor. No caso de um empregado, a pertença a um departamento fica obrigatória pelo constrangimento `NOT NULL` no campo de chave estrangeiro `department_id` para a tabela `department`.
 
-Un jeu de données est disponible dans [ce Gist](https://gist.github.com/raw/4664191/c1fbaba2c82b4d2950709ec2c208852894d16152/structure.sql "wget me").
+Um jogo de dados é disponível :  [esse Gist](https://gist.github.com/raw/4664191/c1fbaba2c82b4d2950709ec2c208852894d16152/structure.sql "wget me").
 
 Génération du modèle PHP
 ------------------------
