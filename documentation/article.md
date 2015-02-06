@@ -92,10 +92,10 @@ Nós vimos aqui que a estrutura de um empregado é fortemente constrangida. Uma 
 
 Um jogo de dados é disponível :  [esse Gist](https://gist.github.com/raw/4664191/c1fbaba2c82b4d2950709ec2c208852894d16152/structure.sql "wget me").
 
-Génération du modèle PHP
-------------------------
+Geração do modelo PHP
+----------------------
 
-À partir de cette structure de base de données, Pomm sait construire les classes qui correspondent aux tables pour nous permettre de nous affranchir des traitements fastidieux de PDO. Dans un premier temps, nous créons un fichier appelé `bootstrap.php` qui sera inclus par nos scripts et dont le but est d'initialiser l'autoloading et la base de données.
+A partir dessa estrutura de banco de dados, Pomm sabe construir as classes correspondendo às tabelas para nos permitir de nos libertar dos tratamentos pesados de PDO. Em primeiro lugar, nós criamos um arquivo chamado `bootstrap.php` que será incluído por nossos scripts e cujo o objetivo é de inicializar o autoloading e o banco de dados.
 
 ```php
 <?php // bootstrap.php
@@ -108,10 +108,9 @@ $database = new Pomm\Connection\Database(array('dsn' => 'pgsql://greg/greg', 'na
 return $database->getConnection();
 ```
 
+Notam que nós específicamos o repertório `lib` como repertório padrão para achar os namespaces a autoload.
 
-Notez que nous spécifions le répertoire `lib` comme répertoire par défaut pour trouver les namespaces à l'autoloader. 
-
-Pour maintenant générer les fichiers de mapping, créons le fichier `generate_model.php` dont une version plus générale est disponible dans [ce Gist](https://gist.github.com/1510801#file-generate_model-php "generate_model.php").
+Para gerar os arquivos de mapping, criamos o arquivo `generate_model.php` cuja uma versão mais geral é disponível [nesse Gist](https://gist.github.com/1510801#file-generate_model-php "generate_model.php").
 
 ```php
 <?php //generate_model.php
@@ -131,8 +130,7 @@ foreach ( $scan->getOutputStack() as $line )
     printf("%s\n", $line);
 }
 ```
-
-Ce script utilise un des outils fournis avec Pomm : [le scanner de schéma](http://pomm.coolkeums.org/documentation/manual-1.1#map-generation-tools "documentation"). Cet outil utilise l'inspecteur de base de données de Pomm pour générer des classes de mapping liées aux structures stockées en base. Dans le cas présent, nous lui demandons de scanner le schéma `company` et de générer les fichiers dans le sous répertoire `lib`, là où nous avons fait pointer l'auto-loader par défaut dans le fichier `bootstrap.php`. Un appel à ce script va nous générer la structure de fichiers suivante ;
+Esse script usa uma das ferramentas fornecida com Pomm : [o escaneador de esquema](http://pomm.coolkeums.org/documentation/manual-1.1#map-generation-tools "documentation"). Essa ferramenta usa o inspetor de banco de dados de Pomm para gerar classes de mapping ligadas às estruturas armazenadas em base. No nosso caso, nós lhe pedimos de escanear o esquema `company` e gerar os arquivos no sub-repertório `lib` (onde nós o indicamos para o autoloader padrão no arquivo `bootstrap.php`). Uma chamada a esse script vai gerar a estrutura dos arquivos seguinte ;
 
     lib/
     └── ElCaro
@@ -145,18 +143,18 @@ Ce script utilise un des outils fournis avec Pomm : [le scanner de schéma](http
             ├── EmployeeMap.php
             └── Employee.php
 
-Cette architecture ne choquera pas les utilisateurs habitués à utiliser des ORM. Nous pouvons constater que le namespace utilisé par les classes de modèle est `\ElCaro\Company` c'est à dire le nom de la base de données passé en paramètre lors de l'instanciation de la classe `Database` avec le nom du schéma. Ainsi, il est possible d'avoir plusieurs classes de tables portant le même nom mais déclarées dans des schémas PostgreSQL différents. D'autre part, chaque table génère 3 classes :
+Essa arquitetura não chocará os usuários acostumados em usar os ORM. Nós podemos constatar que o namespace usado pelas classes de modelo é `\ElCaro\Company` que é o nome do banco de dados passado em parâmetro na instanciação da classe `Database` com o nome do esquema. Assim, é possível ter várias classes de tabelas com o mesmo nome mas declaradas em esquemas PostgreSQL diferentes. Também, cada tabela gera 3 classes :
 
- * une classe portant le même nom que la table à la casse près ;
- * une classe portant le même nom mais affublé du suffixe `Map` ;
- * la même classe dans le sous namespace `Base`.
+ * uma classe tendo o mesmo nome do que a tabela (case sensitive) ;
+ * uma classe tendo o mesmo nome sufixado por `Map` ;
+ * a mesma classe no sub-namespace `Base`.
 
-Les classes du sous namespace `Base` contiennent la définition déduite depuis la structure de la base de données. Ces fichiers seront écrasés à chaque introspection en cas d'évolution de la structure de la base, il serait donc malvenu qu'elles contiennent du code que nous aurions pu placer là. C'est pour cela que la classe `Map` hérite de sa consœur dans `Base`. Vous pouvez y placer votre code, cette classe ne sera pas écrasée. 
+As classes do sub-namespace `Base` contém a definição deduzida da estrutura do banco de dados. Esses arquivos serão destruídos em cada introspeção no caso de uma evolução da estrutura do banco de dados. Não seria apropriado que elas contêm qualquer código que nós teriamos colocado. É por isso que a classe `Map` herda da irmã dela em `Base`. Vocês podem colocar lá seu código, essa classe nunca será esmagada.
 
-Les utilisateurs d'ORM ne seront pas non plus surpris d'apprendre que la classe Map est l'outil qui s'occupera de gérer la vie de leur entité correspondante avec la base de données, à savoir :
+Igualmente, os usuários de ORM não serão supresos de aprender que a classe `Map` é a ferramenta que gerirá a vida das entidades correspondentes com o banco de dados, quer dizer :
 
- * `DepartmentMap` sauvegarde, génère et renvoie des collections d'entités `Department` ;
- * `EmployeeMap` renvoie des collections d'entités `Employee`.
+ * `DepartmentMap` salva, gera et retorna coleções de entidades `Department` ;
+ * `EmployeeMap` retorna coleções de entidades `Employee`.
 
 Premiers pas
 ------------
