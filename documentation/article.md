@@ -156,10 +156,9 @@ Igualmente, os usuários de ORM não serão supresos de aprender que a classe `M
  * `DepartmentMap` salva, gera et retorna coleções de entidades `Department` ;
  * `EmployeeMap` retorna coleções de entidades `Employee`.
 
-Premiers pas
-------------
-
-Pour notre première interface, nous allons afficher la liste des employés. Créons le fichier index.php avec le code PHP suivant :
+Primeiros Passos
+----------------
+Para nossa primeira interface, vamos exibir a lista dos funcionários. Criámos o arquivo `index.php` com o código PHP seguinte :
 
 ```php
 <?php //index.php
@@ -192,14 +191,14 @@ $employees = $connection
 </html>
 ```
 
-Commentons le code ci dessus :
+Comentamos o código abaixo :
 
- 1. La connexion nous permet d'obtenir des instances de classes Map.
- 2. La classe Map sait faire des requêtes qui ramènent des collections de leur entité correspondante.
- 3. Ces collections sont accessibles via `foreach` et retournent leurs entités.
- 4. Les valeurs internes des entités sont accessibles entre autres via la notation de tableau.
-
-L'utilisation de la notation de tableau est pratique dans les templates et elle équivaut complètement à l'utilisation d'accesseurs. Ainsi `$employee['first_name']` est équivalent à `$employee->getFirstName()`. Cela permet par exemple, si on souhaite formater le prénom capitalisé et le nom en majuscule, de juste avoir à surcharger `getFirstName()` et `getLastName()` dans la classe `Employee` :
+ 1. A conexão nos permite de recuperar instances de classes `Map`.
+ 2. A classe `Map` sabe fazer queries que retornam coleções com as entidades delas correspondentes.
+ 3. Essas coleções são acessíveis através `foreach` e retornam as entidades delas.
+ 4. Os valores internas das entidades são acessíveis, por exemplo, através a notação das tabelas. 
+ 
+O uso da notação das tabelas é prática nos templates e é equivalente em usar accessors. Então usar `$employee['first_name']` dá a mesma coisa do que `$employee->getFirstName()`. Isso permite, por exemplo, se desejamos formatar o nome capitalizado e o sobrenome em maiúscula, de somente sobrecarregar `getFirstName()` e `getLastName()` na classe `Employee` :
 
 ```php
 <?php // lib/ElCaro/Company/Employee.php
@@ -228,9 +227,9 @@ class Employee extends BaseObject
 }
 ```
 
-Seuls les accesseurs génériques `get()`, `set()`, `has()` et `clear()` ne peuvent être surchargés car ils sont utilisés pour accéder aux valeurs brutes de l'objet. Nous en aurions besoin ici si nous souhaitions par exemple implémenter une recherche par le prénom alors que la méthode `getFirstName()` ne nous retourne pas la valeur effectivement stockée en base. 
+Somente os accessors genéricos `get()`, `set()`, `has()` e `clear()` não podem ser sobrecarregados pois eles são usados para acessar aos valores brutos do objeto. Nós o precisariamos aqui se queriamos, por exemplo, implementar uma busca por nome enquanto o método `getFirstName()` retorna somente o valor armazenado em base. 
 
-Dans la vraie vie™, un tel exemple ne serait pas vraiment exploitable à cause du volume de données dès que le nombre d'employés dépasse quelques dizaines. Cela ne nous aurait pas coûté tellement plus cher de [les classer par ordre alphabétique](http://pomm.coolkeums.org/documentation/manual-1.1#findall) et de [paginer notre liste](http://pomm.coolkeums.org/documentation/manual-1.1#pagers) de résultats dans le contrôleur.
+Na vida™ real, um tal exemplo não seria realmente viável, por causa do volume de dados, após o momento que a quantidade de funcionários ultrapassaria algumas dezenas. Não nos custaria nada de [classificar por ordem alfabêtico](http://pomm.coolkeums.org/documentation/manual-1.1#findall) e [paginar nossa lista](http://pomm.coolkeums.org/documentation/manual-1.1#pagers) de resultados no controller.
 
 Entités élastiques
 ------------------
