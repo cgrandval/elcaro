@@ -231,10 +231,10 @@ Somente os accessors genéricos `get()`, `set()`, `has()` e `clear()` não podem
 
 Na vida™ real, um tal exemplo não seria realmente viável, por causa do volume de dados, após o momento que a quantidade de funcionários ultrapassaria algumas dezenas. Não nos custaria nada de [classificar por ordem alfabêtico](http://pomm.coolkeums.org/documentation/manual-1.1#findall) e [paginar nossa lista](http://pomm.coolkeums.org/documentation/manual-1.1#pagers) de resultados no controller.
 
-Entités élastiques
+Entidades elásticas
 ------------------
 
-Intéressons-nous maintenant à l'affichage des données d'un utilisateur :
+Nos interessamos agora na exibição dos dados de um usuário :
 
 ```php
 <?php // show_employee.php
@@ -269,11 +269,11 @@ if (!$employee = $connection
 </html>
 ```
 
-Là encore, nous pouvons voir que le convertisseur a fait son travail, la date de naissance est un objet PHP `DateTime`, le champs `is_manager` est un booléen et on peut formater `day_salary` convenablement.
+Aqui ainda, nós podemos ver que o conversor fez o trabalho dele, a data de nascimento é um objeto PHP `DateTime`, o campo `is_manager` é um booleano e podemos formatar corretamente `day_salary`.
 
-Imaginons maintenant qu'en plus de la date de naissance, nous avions besoin d'avoir directement l'âge de la personne. Il est bien sûr facile de créer un accesseur supplémentaire `getAge()` dans la classe `Employee` dans laquelle nous calculerions en PHP l'âge à partir de la date de naissance mais pourquoi ne pas le demander directement à PostgreSQL en utilisant la fonction `age()` ? 
+Imaginamos agora que a mais da data de nascimento, precisamos ter diretamente a idade da pessoa. Claro, é facíl criar um acessor suplementar `getAge()` na classe `Employee` em qual nós calcularíamos em PHP a idade a partir da data de nascimento. Mas porque não pedir isso diretamente a PostgreSQL usando a função `age()`?
 
-Il faut savoir que Pomm n'utilise jamais l'alias `*` dans ses requêtes, il utilise pour cela la méthode `getSelectFields()` définie dans les classes Map. Par défaut, cette méthode retourne tous les champs de la table, mais il est possible de la surcharger pour en enlever ou en ajouter. En d'autres termes, **cette méthode définit la projection de l'objet en base de données vers l'objet entité PHP**.
+Deve saber que Pomm nunca usa o alias `*` nas claúsulas que ele cria. Por isso, ele usa o método `getSelectFields()` definido nas classes `Map`. Por padrão, esse método retorna todos os campos da tabela, mas é possível de sobrecarregar-lá parar retirar ou adicionar outros campos. Em outras palavras, **esse método define a projeção do objeto no banco de dados para o objeto entidade PHP**.
 
 ```php
 <?php // lib/ElCaro/Company/EmployeeMap.php
@@ -297,11 +297,11 @@ class EmployeeMap extends BaseEmployeeMap
 }
 ```
 
-Et ajoutons la ligne suivante dans la partie template de `show_employee.php` :
+E adicionamos a linha seguinte na parte template de `show_employee.php` :
 
     <li>Age: <?php echo $employee['age'] ?>.</li>
 
-En rafraîchissant la page, celle-ci affiche désormais quelque chose ressemblant à `Age: 27 years 11 mons 2 days.`. C'est la sortie brute de la commande `age()` de PostgreSQL, Pomm ne sachant comment interpréter cette sortie, la convertit au format String. Il est possible d'étendre la définition de notre entité en y ajoutant le type de cette nouvelle colonne virtuelle afin qu'elle soit prise en charge par le convertisseur quand elle existe :
+Depois de atualizar a página, ela exiba algo similar a `Age: 27 years 11 mons 2 days.`. Isso é o output bruto do comando `age()` de PostgreSQL. Pomm não sabendo interpretar esse output, o converte ao formato String. É possível expandir a definição da nossa entidade adicionando o tipo dessa nova coluna virtual para ela ser suportada pelo conversor quando ela existe : 
 
 ```php
 <?php // lib/ElCaro/Company/EmployeeMap.php
@@ -314,11 +314,11 @@ En rafraîchissant la page, celle-ci affiche désormais quelque chose ressemblan
     }
 ```
 
-Si vous rafraîchissez désormais la page, celle-ci présente une erreur comme quoi PHP ne sait pas comment afficher une instance de la classe PHP `DateInterval` : le convertisseur a bien fait son travail. Changez l'affichage de l'âge par la ligne suivante :
+Agora, se você atualizar de novo a página, um erro indica que PHP não sabe como exibir uma instance da classe `DateInterval` : o conversor fez bem o trabalho dele. Então, muda a exibição da idade pela linha seguinte :
 
       <li>Age: <?php echo $employee['age']->format("%y") ?> years old.</li>
 
-Avant de conclure ce chapitre, notons que la méthode `getSelectFields()` que nous avons surchargée est génératrice de problèmes car le nouveau champs `age` que nous avons ajouté est insensible à l'alias. Cela peut -- et va -- poser des problèmes lors de requêtes complexes où ce champs peut apparaitre dans plusieurs ensembles. La laisser ainsi occasionnerait des erreurs SQL de type « champs ambigu » assez délicats à déboguer. Pour prévenir cela, corrigeons la méthode comme suit :
+Antes de concluír esse capítulo, notamos que o método `getSelectFields()` que nós sobrecarregamos é geradora de problemas pois o novo campo `age` que nós adicionamos é insensível ao alias. Isso pode -- e vai -- criar problemas na criação de claúsulas complexas onde esse campo pode ser presente em vários conjuntos. Deixá-lo assim pode ocasionar erros SQL de tipo « clause is ambiguous » complicados a debug. Para prevenir isso, corrigimos o método assim :
 
 ```php
     public function getSelectFields($alias = null)
